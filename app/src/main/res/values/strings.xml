@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SimonP1</string>
+    <string name="intermediate">intermediate</string>
+    <string name="difficult">Difficult</string>
+    <string name="easy">easy</string>
+    <string name="gameTextPlaceHolder">Playing with level easy</string>
+</resources>
