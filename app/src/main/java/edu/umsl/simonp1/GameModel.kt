@@ -1,21 +1,29 @@
 package edu.umsl.simonp1
 
-/**
- * Created by nor on 2/23/18.
- */
-class GameModel(_level: Int? = 0) {
+import android.util.Log
 
-    // should be enum
-    var level: Int
+class GameModel(level: Level?) {
+
+    var level: Level
+    var levelName: String = level.toString()
+    var initialLength: Int = 1
+    var speed: Int = 200
+
 
     init {
-        level = _level ?: 0
+        this.level = level ?: Level.EASY
+        when(level){
+            Level.EASY -> Log.e("Error", "easy")
+            Level.INTERMEDIATE -> setup(initialLength*3, speed/3)
+            else -> setup(6,50 )
+        }
 
     }
 
-
-    fun isLevelEasy(value: Int): Boolean {
-        println("is level easy?  ")
-        return value == level
+    private fun setup(initialLength: Int, speed: Int){
+        this.initialLength = initialLength
+        this.speed = speed
+        Log.e("Error", levelName)
     }
+
 }
