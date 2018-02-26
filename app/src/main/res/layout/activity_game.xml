@@ -1,16 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="edu.umsl.simonp1.GameActivity">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    tools:context="edu.umsl.simonp1.GameActivity"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/messageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/gameTextPlaceHolder" />
-</android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_height="316dp">
+
+        <Button
+            android:id="@+id/greenButton"
+            android:background = "@drawable/roundgreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:width="100dp"
+            android:height="100dp"
+            android:text="green"
+            app:layout_constraintBottom_toTopOf="@id/yellowButton"
+            app:layout_constraintEnd_toStartOf="@id/redButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <Button
+            android:id="@+id/redButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:width="100dp"
+            android:height="100dp"
+            android:background="@drawable/roundred"
+            android:backgroundTint="@color/colorRed"
+            android:text="red"
+            app:layout_constraintBottom_toTopOf="@id/blueButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/greenButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <Button
+            android:id="@+id/yellowButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:width="100dp"
+            android:height="100dp"
+
+            android:background="@drawable/roundyellow"
+            android:text="y"
+            app:layout_constraintEnd_toStartOf="@+id/blueButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/greenButton" />
+
+        <Button
+            android:id="@+id/blueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:width="100dp"
+            android:height="100dp"
+            android:background="@drawable/roundblue"
+
+            android:text="blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/yellowButton"
+            app:layout_constraintTop_toBottomOf="@+id/redButton" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

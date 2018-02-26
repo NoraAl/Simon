@@ -16,7 +16,5 @@ class GameActivity : Activity() {
 
         var level = intent.getSerializableExtra(MainActivity.LEVEL_KEY)
         singleGame = GameModel(level as Level?)
-        Log.e("Error", "mmmmm")
-
     }
 }
