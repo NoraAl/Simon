@@ -10,29 +10,30 @@
     tools:context="edu.umsl.simonp1.GameActivity"
     android:orientation="vertical">
 
-    <EditText
+    <TextView
         android:id="@+id/messageText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/gameTextPlaceHolder" />
+        android:height="50dp"
+        android:text="TextView" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_gravity="center"
-        android:layout_height="316dp">
+        android:layout_height="200dp">
 
         <Button
+
             android:id="@+id/greenButton"
-            android:background = "@drawable/roundgreen"
+            android:backgroundTint="@color/colorLGreen"
+            android:shadowColor="@color/colorRed"
+            android:elevation="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:width="100dp"
             android:height="100dp"
-            android:text="green"
             app:layout_constraintBottom_toTopOf="@id/yellowButton"
             app:layout_constraintEnd_toStartOf="@id/redButton"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,8 +48,6 @@
             android:width="100dp"
             android:height="100dp"
             android:background="@drawable/roundred"
-            android:backgroundTint="@color/colorRed"
-            android:text="red"
             app:layout_constraintBottom_toTopOf="@id/blueButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/greenButton"
@@ -64,7 +63,6 @@
             android:height="100dp"
 
             android:background="@drawable/roundyellow"
-            android:text="y"
             app:layout_constraintEnd_toStartOf="@+id/blueButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/greenButton" />
@@ -77,8 +75,6 @@
             android:width="100dp"
             android:height="100dp"
             android:background="@drawable/roundblue"
-
-            android:text="blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/yellowButton"
