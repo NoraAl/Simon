@@ -30,7 +30,7 @@ class MainActivity : Activity() {
         this.startActivity(intent)
     }
 
-    val easyListener = View.OnClickListener {
+    private val easyListener = View.OnClickListener {
         Log.e("mainActivity", "easyListener")
         play(Level.EASY)
     }
