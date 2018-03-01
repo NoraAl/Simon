@@ -43,6 +43,7 @@ class GameFramgment: Fragment() {
 
     fun start(){
         gameModel?.start()
+        startSequence()
     }
 
     fun addToSequence (color: Colors){
@@ -60,9 +61,11 @@ class GameFramgment: Fragment() {
     fun startSequence() {
         if (handler == null) {
             handler = Handler()
-            handler!!.postDelayed(runnable, 1500)
+            handler!!.postDelayed(runnable, 300)
+            Log.e("startSeq", "start")
         } else {
-            Log.e("FRAGMENT", "Handler already created!")
+            handler!!.postDelayed(runnable, 300)
+            Log.e("startSeq", "already and start")
         }
     }
 

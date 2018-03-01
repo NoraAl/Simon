@@ -2,8 +2,8 @@
 <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
     android:propertyName="textColor"
     android:valueFrom="@color/colorBlack"
-    android:valueTo="@color/colorRed"
-    android:duration="500"
+    android:valueTo="@color/colorWhite"
+    android:duration="1000"
     android:repeatCount="1"
     android:repeatMode="reverse" >
 </objectAnimator>

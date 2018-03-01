@@ -20,7 +20,7 @@ class GameModel(level: Level? ) {
 
         when(level){ // easy is the default
             Level.INTERMEDIATE -> setup(length *3, duration /2)
-            else -> setup(length * 6,duration /4 )
+            Level.DIFFICULT -> setup(length * 6,duration /4 )
         }
 
         while( length > 1 ){
@@ -28,6 +28,7 @@ class GameModel(level: Level? ) {
             length--
         }
     }
+
     private fun setup(length: Int, duration: Int){
         this.length = length
         this.duration = duration
@@ -38,7 +39,11 @@ class GameModel(level: Level? ) {
     }
 
     fun currentColor(): Colors? {
-        return sequence?.get(0)
+        val color = sequence?.size!!-1
+        println("-------- $sequence")
+        println("         $color")
+        return sequence?.get(color)
+
     }
 
     fun addToSequence(color: Colors){
@@ -59,7 +64,7 @@ class GameModel(level: Level? ) {
 
     private fun showSequence(){
         //todo: implement
-        println("\t\tSequence:$sequence")
+        println("\t\tSequence:showSequence")
     }
 
     private fun randomColor():Colors{
