@@ -15,7 +15,9 @@ class GameFramgment: Fragment() {
 
 
     interface MainFragmentListener {
-        fun show(color: Colors)
+        fun show(color: Colors, index: Int)
+
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,29 +45,47 @@ class GameFramgment: Fragment() {
 
     fun start(){
         gameModel?.start()
-        startSequence()
+        showSequence()
     }
 
-    fun addToSequence (color: Colors){
-        gameModel?.addToSequence(color)
+    fun proceed(){
+        gameModel?.proceed()
+        showSequence()
     }
 
-    private var runnable = object : Runnable {
-        override fun run() {
-            Log.e("FRAGMENT", "Running in the runnable with the runnings.")
-            listener?.show(gameModel?.currentColor()!!)
-//            handler?.postDelayed(this, 1000)
+    fun check(color: Colors): Status{
+        val result = gameModel?.check(color)
+        if (result?.correct == false){
+            //gameover
+            return Status.GAMEOVER
         }
+        if (result?.correct!! && result?.wholeSeqIsCorrect){
+            // message: good job
+            // end the game and clean resources
+            return Status.COMPLETED
+        }
+        return Status.CONTINUE
     }
 
-    fun startSequence() {
+//    private var runnable = object : Runnable(color:Colors) {
+//        override fun run() {
+//
+//
+//                listener?.show(sequence?.get(i))
+//        }
+//    }
+
+    fun showSequence() {
+        val sequence = gameModel?.sequence()
         if (handler == null) {
             handler = Handler()
-            handler!!.postDelayed(runnable, 300)
-            Log.e("startSeq", "start")
+            for (i in 0 until sequence?.size!!)
+                handler!!.postDelayed({
+                    listener?.show(sequence?.get(i),i)
+                }, 300)
         } else {
-            handler!!.postDelayed(runnable, 300)
-            Log.e("startSeq", "already and start")
+            for (i in 0 until sequence?.size!!)
+                listener?.show(sequence?.get(i), i)
         }
     }
 

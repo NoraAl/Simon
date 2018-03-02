@@ -1,17 +1,15 @@
 package edu.umsl.simonp1
 
-import android.animation.AnimatorInflater
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_game.*
-import android.animation.ValueAnimator
 import android.graphics.PorterDuff
 import android.animation.ObjectAnimator
 import android.graphics.Color
+import android.os.Handler
+import android.util.Log
 import android.widget.ImageButton
-import android.widget.ImageView
 
 
 private const val GAME_FRAGMENT_TAG = "GameFramgment"
@@ -58,25 +56,44 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
 
 
     }
+    private fun check(color: Colors){
+        titleTextView.text = ".."
+        val result = gameFramgment?.check(color)
+        when (result) {
+            Status.GAMEOVER -> titleTextView.text = "GAMEOVER"
+            Status.COMPLETED -> {
+                val handler = Handler()
+                handler!!.postDelayed({
+                    gameFramgment?.proceed()
+                },
+                        500
+                )
+
+
+            }
+            Status.CONTINUE -> titleTextView.text = ".."
+        }
+    }
 
     private val blueListener = View.OnClickListener {
-        this.adjustAlpha(R.color.colorRed,0.5F)
-        gameFramgment?.addToSequence(Colors.BLUE)
+        check(Colors.BLUE)
+
     }
 
     private val greenListener = View.OnClickListener {
-        gameFramgment?.addToSequence(Colors.GREEN)
+        check(Colors.GREEN)
     }
 
     private val redListener = View.OnClickListener {
-        gameFramgment?.addToSequence(Colors.RED)
+        check(Colors.RED)
     }
 
     private val yellowListener = View.OnClickListener {
-        gameFramgment?.addToSequence(Colors.YELLOW)
+        check(Colors.YELLOW)
     }
 
     private val startListener = View.OnClickListener {
+        startButton.setText("Exit")
         gameFramgment?.start()
     }
 
@@ -90,7 +107,7 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
         return resources.getColor(value)
     }
 
-    override fun show(color: Colors) {
+    override fun show(color: Colors, index: Int) {
 
         val view: ImageButton = when (color) {
             Colors.BLUE -> blueButton
@@ -102,21 +119,23 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
         val buttonColor = getHexColor(color)
 
 
-        val colorAnim = ObjectAnimator.ofFloat(1f, 0f)
-        colorAnim.addUpdateListener { animation ->
+        val animator = ObjectAnimator.ofFloat(1f, 0f)
+        animator.addUpdateListener { animation ->
             val initial = animation.animatedValue as Float
 
-            val alphaColor = adjustAlpha(buttonColor , 0.7F)
+            val alphaColor = adjustAlpha(buttonColor, 0.7F)
             view.setColorFilter(alphaColor, PorterDuff.Mode.LIGHTEN)
             if (initial.toDouble() == 0.0) {
                 view.colorFilter = null
             }
         }
 
-        colorAnim.duration = 150
-//        colorAnim.repeatMode = ValueAnimator.RESTART
-        colorAnim.repeatCount = 1
-        colorAnim.start()
+        animator.duration = 100
+//        animator.repeatMode = ValueAnimator.RESTART
+        animator.repeatCount = 1
+        animator.startDelay = (index  * 400).toLong()
+        animator.start()
+        Log.d("dkjsl", color.toString())
 
     }
 

@@ -1,5 +1,6 @@
 package edu.umsl.simonp1
 
+import android.util.Log
 import java.util.Random
 
 class GameModel(level: Level? ) {
@@ -9,6 +10,8 @@ class GameModel(level: Level? ) {
     var duration: Int = 200
     var sequence: ArrayList<Colors>? = null
     var userSequence: ArrayList<Colors>? = null
+    var index = 0
+
 
 
 
@@ -35,36 +38,31 @@ class GameModel(level: Level? ) {
     }
 
     fun start(){
+        index = 0
         proceed()
-    }
-
-    fun currentColor(): Colors? {
-        val color = sequence?.size!!-1
-        println("-------- $sequence")
-        println("         $color")
-        return sequence?.get(color)
 
     }
 
-    fun addToSequence(color: Colors){
-        userSequence?.add(color)
-        // todo: check if the user color match the currnet pointed color
-        // todo: if not then error, but highlight the correct current pointed color
-        // todo: if last pointed color ,i.e. correct sequence, make buttons uncklickables
-        // todo: then call function proceed
-        println("\t\tUser sequence: $userSequence")
+    fun sequence(): ArrayList<Colors>? {
+        return sequence
+
     }
 
-    private fun proceed (){
+    data class Tuple(val correct: Boolean = false , val wholeSeqIsCorrect: Boolean = false)
+
+    fun check(color: Colors): Tuple {
+        val i = index
+        index = (index+1)%sequence?.size!!
+        Log.e("Check","              $i and index is $index")
+
+        return Tuple (color == sequence?.get(i), i == sequence?.size!!-1)
+    }
+
+    fun proceed (){
         sequence?.add(randomColor())
-        showSequence()
+        Log.e("sequence", "         is $sequence")
 
 
-    }
-
-    private fun showSequence(){
-        //todo: implement
-        println("\t\tSequence:showSequence")
     }
 
     private fun randomColor():Colors{

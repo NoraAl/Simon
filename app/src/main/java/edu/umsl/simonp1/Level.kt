@@ -1,6 +1,8 @@
 package edu.umsl.simonp1
 
 enum class Level {EASY, INTERMEDIATE, DIFFICULT}
+enum class Status{CONTINUE, COMPLETED, GAMEOVER}
+
 
 enum class Colors(val color: Int){
     BLUE(0),
