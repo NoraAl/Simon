@@ -53,27 +53,10 @@ class GameFramgment: Fragment() {
         showSequence()
     }
 
-    fun check(color: Colors): Status{
-        val result = gameModel?.check(color)
-        if (result?.correct == false){
-            //gameover
-            return Status.GAMEOVER
-        }
-        if (result?.correct!! && result?.wholeSeqIsCorrect){
-            // message: good job
-            // end the game and clean resources
-            return Status.COMPLETED
-        }
-        return Status.CONTINUE
+    fun check(color: Colors): GameModel.Tuple {
+        return gameModel?.check(color)!!
     }
 
-//    private var runnable = object : Runnable(color:Colors) {
-//        override fun run() {
-//
-//
-//                listener?.show(sequence?.get(i))
-//        }
-//    }
 
     fun showSequence() {
         val sequence = gameModel?.sequence()

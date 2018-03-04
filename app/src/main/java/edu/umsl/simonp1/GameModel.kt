@@ -48,14 +48,23 @@ class GameModel(level: Level? ) {
 
     }
 
-    data class Tuple(val correct: Boolean = false , val wholeSeqIsCorrect: Boolean = false)
+    data class Tuple (val result: Status, val value: Int)
 
     fun check(color: Colors): Tuple {
         val i = index
         index = (index+1)%sequence?.size!!
         Log.e("Check","              $i and index is $index")
 
-        return Tuple (color == sequence?.get(i), i == sequence?.size!!-1)
+        // game over
+        if (color != sequence?.get(i))
+            return Tuple (Status.GAMEOVER, sequence?.size!!-1)
+
+        // whole sequence is correct, now show the new sequence
+        if (i == sequence?.size!!-1)
+            return Tuple(Status.COMPLETED, 0)
+
+        //current color is correct, keep getting the input from the user
+        return Tuple(Status.CONTINUE,0 )
     }
 
     fun proceed (){

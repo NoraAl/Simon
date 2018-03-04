@@ -6,14 +6,17 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_game.*
 import android.graphics.PorterDuff
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
 import android.util.Log
 import android.widget.ImageButton
+import java.io.Serializable
 
 
-private const val GAME_FRAGMENT_TAG = "GameFramgment"
+private const val GAME_FRAGMENT = "GameFramgment"
 const val LEVEL = "Level"
+const val RESULT_VIEW = "RESULT_VIEW"
 
 @Suppress("DEPRECATION")
 class GameActivity : Activity(), GameFramgment.MainFragmentListener {
@@ -29,24 +32,8 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
         var level = intent.getSerializableExtra(MainActivity.LEVEL_KEY)
 
         titleTextView.text = "PLAYING "+ level.toString() + " LEVEL"
-        val bundle = Bundle()
-        bundle.putSerializable(LEVEL, level)
 
-        val manager = fragmentManager
-        gameFramgment = manager.findFragmentByTag(GAME_FRAGMENT_TAG) as? GameFramgment
-
-        if (gameFramgment == null) {
-            gameFramgment = GameFramgment()
-            gameFramgment!!.arguments = bundle
-
-            manager.beginTransaction()
-                    .add(gameFramgment, GAME_FRAGMENT_TAG)
-                    .commit()
-        }
-
-
-        gameFramgment?.listener = this
-
+        fragmentSetup(level)
 
         blueButton.setOnClickListener(blueListener)
         greenButton.setOnClickListener(greenListener)
@@ -56,28 +43,26 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
 
 
     }
-    private fun check(color: Colors){
-        titleTextView.text = ".."
-        val result = gameFramgment?.check(color)
-        when (result) {
-            Status.GAMEOVER -> titleTextView.text = "GAMEOVER"
-            Status.COMPLETED -> {
-                val handler = Handler()
-                handler!!.postDelayed({
-                    gameFramgment?.proceed()
-                },
-                        500
-                )
 
+    private fun fragmentSetup(level: Serializable){
+        val bundle = Bundle()
+        bundle.putSerializable(LEVEL, level)
 
-            }
-            Status.CONTINUE -> titleTextView.text = ".."
+        val manager = fragmentManager
+        gameFramgment = manager.findFragmentByTag(GAME_FRAGMENT) as? GameFramgment
+
+        if (gameFramgment == null) {
+            gameFramgment = GameFramgment()
+            gameFramgment!!.arguments = bundle
+            manager.beginTransaction()
+                    .add(gameFramgment, GAME_FRAGMENT)
+                    .commit()
         }
+        gameFramgment?.listener = this
     }
 
     private val blueListener = View.OnClickListener {
         check(Colors.BLUE)
-
     }
 
     private val greenListener = View.OnClickListener {
@@ -95,6 +80,31 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
     private val startListener = View.OnClickListener {
         startButton.setText("Exit")
         gameFramgment?.start()
+    }
+
+    private fun check(color: Colors){
+        titleTextView.text = ".."
+        val result = gameFramgment?.check(color)
+        when (result?.result) {
+            Status.CONTINUE -> titleTextView.text = ".."
+            Status.COMPLETED -> {
+                val handler = Handler()
+                handler!!.postDelayed({
+                    gameFramgment?.proceed()
+                },
+                        500
+                )
+
+
+            }
+            Status.GAMEOVER -> gameover(result?.value)
+        }
+    }
+
+    private fun gameover(result: Int){
+        val intent = Intent(this, ResultView::class.java)
+        intent.putExtra(RESULT_VIEW, result)
+        this.startActivity(intent)
     }
 
     private fun getHexColor(color: Colors): Int{
