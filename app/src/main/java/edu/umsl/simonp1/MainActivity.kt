@@ -24,10 +24,16 @@ class MainActivity : Activity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("MainActivity", "----> onDestroy")
+    }
+
     private fun play(level: Level):Unit {
-        val intent = Intent(this, GameActivity::class.java)
-        intent.putExtra(LEVEL_KEY, level)
-        this.startActivity(intent)
+        val playIntent = Intent(this, GameActivity::class.java)
+        playIntent.putExtra(LEVEL_KEY, level)
+        this.startActivity(playIntent)
+        finish()
     }
 
     private val easyListener = View.OnClickListener {

@@ -20,8 +20,6 @@ const val RESULT_VIEW = "RESULT_VIEW"
 
 @Suppress("DEPRECATION")
 class GameActivity : Activity(), GameFramgment.MainFragmentListener {
-
-
     var gameFramgment: GameFramgment? = null
 
 
@@ -42,6 +40,21 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
         startButton.setOnClickListener(startListener)
 
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.e("onPause", " --------------")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.e("GameActivity", "----> onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("GameActivity", "----> onDestroy")
     }
 
     private fun fragmentSetup(level: Serializable){
@@ -102,10 +115,12 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
     }
 
     private fun gameover(result: Int){
-        val intent = Intent(this, ResultView::class.java)
-        intent.putExtra(RESULT_VIEW, result)
-        this.startActivity(intent)
+        val resultIntent = Intent(this, ResultView::class.java)
+        resultIntent.putExtra(RESULT_VIEW, result)
+        startActivity(resultIntent)
+        finish()
     }
+
 
     private fun getHexColor(color: Colors): Int{
         val value: Int = when (color) {
