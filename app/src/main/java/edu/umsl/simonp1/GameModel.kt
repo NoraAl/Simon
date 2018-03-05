@@ -7,10 +7,11 @@ class GameModel(level: Level? ) {
 
     var level: Level
     var length: Int = 1
-    var duration: Int = 200
+    var duration: Long = 200
     var sequence: ArrayList<Colors>? = null
     var userSequence: ArrayList<Colors>? = null
-    var index = 0
+    var index: Int = 0
+    var userIndex = 0
 
 
 
@@ -32,7 +33,7 @@ class GameModel(level: Level? ) {
         }
     }
 
-    private fun setup(length: Int, duration: Int){
+    private fun setup(length: Int, duration: Long){
         this.length = length
         this.duration = duration
     }
@@ -48,30 +49,31 @@ class GameModel(level: Level? ) {
 
     }
 
-    data class Tuple (val result: Status, val value: Int)
+    data class Triple (val result: Status, val value: Int, val duration: Long)
 
-    fun check(color: Colors): Tuple {
+    fun check(color: Colors): Triple {
+
         val i = index
         index = (index+1)%sequence?.size!!
-        Log.e("Check","              $i and index is $index")
 
         // game over
         if (color != sequence?.get(i))
-            return Tuple (Status.GAMEOVER, sequence?.size!!-1)
+            return Triple (Status.GAMEOVER, userIndex, duration)
 
+        userIndex++
         // whole sequence is correct, now show the new sequence
-        if (i == sequence?.size!!-1)
-            return Tuple(Status.COMPLETED, 0)
+        if (i == sequence?.size!!-1) {
+            userIndex = 0
+            return Triple(Status.COMPLETED, 0, duration)
+        }
 
         //current color is correct, keep getting the input from the user
-        return Tuple(Status.CONTINUE,0 )
+        return Triple(Status.CONTINUE,0, duration )
     }
 
     fun proceed (){
         sequence?.add(randomColor())
         Log.e("sequence", "         is $sequence")
-
-
     }
 
     private fun randomColor():Colors{

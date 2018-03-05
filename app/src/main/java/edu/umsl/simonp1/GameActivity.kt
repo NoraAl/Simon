@@ -75,7 +75,7 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
     }
 
     private val blueListener = View.OnClickListener {
-        check(Colors.BLUE)
+        this.check(Colors.BLUE)
     }
 
     private val greenListener = View.OnClickListener {
@@ -92,12 +92,14 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
 
     private val startListener = View.OnClickListener {
         startButton.setText("Exit")
+        println()
         gameFramgment?.start()
     }
 
     private fun check(color: Colors){
-        titleTextView.text = ".."
+
         val result = gameFramgment?.check(color)
+
         when (result?.result) {
             Status.CONTINUE -> titleTextView.text = ".."
             Status.COMPLETED -> {
@@ -105,7 +107,7 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
                 handler!!.postDelayed({
                     gameFramgment?.proceed()
                 },
-                        500
+                        result.duration*3
                 )
 
 
@@ -124,15 +126,15 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
 
     private fun getHexColor(color: Colors): Int{
         val value: Int = when (color) {
-            Colors.BLUE -> R.color.colorBlue
-            Colors.GREEN -> R.color.colorGreen
+            Colors.BLUE -> R.color.colorLBlue
+            Colors.GREEN -> R.color.colorLGreen
             Colors.RED -> R.color.colorRed
             else -> R.color.colorYellow
         }
         return resources.getColor(value)
     }
 
-    override fun show(color: Colors, index: Int) {
+    override fun show(color: Colors, duration: Long, index: Int) {
 
         val view: ImageButton = when (color) {
             Colors.BLUE -> blueButton
@@ -142,25 +144,27 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
         }
 
         val buttonColor = getHexColor(color)
+        //println("-----------$buttonColor------------")
+
 
 
         val animator = ObjectAnimator.ofFloat(1f, 0f)
         animator.addUpdateListener { animation ->
             val initial = animation.animatedValue as Float
 
-            val alphaColor = adjustAlpha(buttonColor, 0.7F)
-            view.setColorFilter(alphaColor, PorterDuff.Mode.LIGHTEN)
+            //val alphaColor = adjustAlpha(buttonColor, 0.7F)
+            //val alphaColor =  0xccc
+            view.setColorFilter(buttonColor, PorterDuff.Mode.LIGHTEN)
             if (initial.toDouble() == 0.0) {
                 view.colorFilter = null
             }
         }
 
-        animator.duration = 100
+        animator.duration = duration
 //        animator.repeatMode = ValueAnimator.RESTART
         animator.repeatCount = 1
-        animator.startDelay = (index  * 400).toLong()
+        animator.startDelay = (index  * (duration*2.5)).toLong()
         animator.start()
-        Log.d("dkjsl", color.toString())
 
     }
 

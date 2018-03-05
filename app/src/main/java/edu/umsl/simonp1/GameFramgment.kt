@@ -4,6 +4,7 @@ import android.app.Fragment
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import java.util.*
 
 class GameFramgment: Fragment() {
 
@@ -15,15 +16,13 @@ class GameFramgment: Fragment() {
 
 
     interface MainFragmentListener {
-        fun show(color: Colors, index: Int)
-
-
+        fun show(color: Colors, duration: Long, index: Int)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        retainInstance = true
+
+       // retainInstance = true
 
         if (savedInstanceState != null) {
             this.level = savedInstanceState.getSerializable(LEVEL) as Level
@@ -53,22 +52,40 @@ class GameFramgment: Fragment() {
         showSequence()
     }
 
-    fun check(color: Colors): GameModel.Tuple {
+    fun check(color: Colors): GameModel.Triple {
         return gameModel?.check(color)!!
     }
+
+//    val sequenceRunnable = object: Runnable {
+//        val sequence = gameModel?.sequence()
+//        val duration = gameModel?.duration!!
+//        override fun run()  {
+//            for (i in 0 until sequence?.size!!)
+//                listener?.show(sequence?.get(i), duration, i)
+//
+//        }
+//    }
 
 
     fun showSequence() {
         val sequence = gameModel?.sequence()
+        val duration = gameModel?.duration!!
+
         if (handler == null) {
             handler = Handler()
-            for (i in 0 until sequence?.size!!)
-                handler!!.postDelayed({
-                    listener?.show(sequence?.get(i),i)
-                }, 300)
+            handler!!.postDelayed({
+                for (i in 0 until sequence?.size!!)
+                    listener?.show(sequence?.get(i), duration, i)
+
+            }, 500)
+            Log.e("Handler", "------- after")
         } else {
-            for (i in 0 until sequence?.size!!)
-                listener?.show(sequence?.get(i), i)
+            handler!!.postDelayed({
+                for (i in 0 until sequence?.size!!)
+                    listener?.show(sequence?.get(i), duration, i)
+
+            }, 500)
+            Log.e("Handler", "------- after")
         }
     }
 
