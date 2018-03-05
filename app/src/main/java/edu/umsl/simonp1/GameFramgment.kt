@@ -17,6 +17,8 @@ class GameFramgment: Fragment() {
 
     interface MainFragmentListener {
         fun show(color: Colors, duration: Long, index: Int)
+        fun freeze()
+        fun unfreeze()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,13 +45,17 @@ class GameFramgment: Fragment() {
     }
 
     fun start(){
+        listener?.freeze()
         gameModel?.start()
         showSequence()
+        listener?.unfreeze()
     }
 
     fun proceed(){
+        listener?.freeze()
         gameModel?.proceed()
         showSequence()
+        listener?.unfreeze()
     }
 
     fun check(color: Colors): GameModel.Triple {

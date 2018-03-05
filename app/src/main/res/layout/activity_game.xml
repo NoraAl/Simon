@@ -23,7 +23,7 @@
         android:layout_height="200dp"
         android:layout_gravity="center">
 
-        <ImageButton
+        <Button
 
             android:id="@+id/greenButton"
             android:layout_width="wrap_content"
@@ -31,15 +31,8 @@
             android:layout_marginStart="8dp"
             android:width="100dp"
             android:height="100dp"
-            android:text="green"
-
-
-
-            android:src="@drawable/imageasset"
-            android:padding="0dp"
-            android:scaleType="centerCrop"
-
             android:backgroundTint="@color/colorGreen"
+
 
             app:layout_constraintBottom_toTopOf="@id/yellowButton"
             app:layout_constraintEnd_toStartOf="@id/redButton"
@@ -47,23 +40,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0" />
 
-        <ImageButton
+        <Button
             android:id="@+id/redButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:width="100dp"
             android:height="100dp"
-
-            android:scaleType="fitXY"
-
-            android:padding="0dp"
-
             android:backgroundTint="@color/colorRed"
-            android:src="@drawable/imageasset"
-
-
-
 
             app:layout_constraintBottom_toTopOf="@id/blueButton"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,17 +58,14 @@
 
 
 
-        <ImageButton
+        <Button
             android:id="@+id/yellowButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:width="100dp"
             android:height="100dp"
-            android:text="yellow"
-            android:src="@drawable/imageasset"
-            android:scaleType="centerCrop"
-            android:padding="0dp"
+
 
 
             android:backgroundTint="@color/colorYellow"
@@ -92,18 +73,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/greenButton" />
 
-        <ImageButton
+        <Button
             android:id="@+id/blueButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:width="100dp"
             android:height="100dp"
-            android:text="blue"
-            android:src="@drawable/imageasset"
 
-            android:padding="0dp"
-            android:scaleType="centerCrop"
+
 
             android:backgroundTint="@color/colorBlue"
             app:layout_constraintEnd_toEndOf="parent"

@@ -7,7 +7,7 @@ class GameModel(level: Level? ) {
 
     var level: Level
     var length: Int = 1
-    var duration: Long = 200
+    var duration: Long = 600
     var sequence: ArrayList<Colors>? = null
     var userSequence: ArrayList<Colors>? = null
     var index: Int = 0
