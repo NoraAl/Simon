@@ -11,10 +11,7 @@ class GameModel(level: Level? ) {
     var sequence: ArrayList<Colors>? = null
     var userSequence: ArrayList<Colors>? = null
     var index: Int = 0
-    var userIndex = 0
-
-
-
+    var currentScore = 0
 
     init {
         this.level = level ?: Level.EASY
@@ -23,8 +20,8 @@ class GameModel(level: Level? ) {
         userSequence = ArrayList()
 
         when(level){ // easy is the default
-            Level.INTERMEDIATE -> setup(length *3, duration /2)
-            Level.DIFFICULT -> setup(length * 6,duration /4 )
+            Level.INTERMEDIATE -> setup(3, duration /2)
+            Level.DIFFICULT -> setup(5,duration /4 )
         }
 
         while( length > 1 ){
@@ -41,45 +38,41 @@ class GameModel(level: Level? ) {
     fun start(){
         index = 0
         proceed()
-
     }
 
     fun sequence(): ArrayList<Colors>? {
         return sequence
-
     }
 
-    data class Triple (val result: Status, val value: Int, val duration: Long)
+    data class Triple (val result: Status, val currentScore: Int, val duration: Long)
 
     fun check(color: Colors): Triple {
 
         val i = index
-        index = (index+1)%sequence?.size!!
+
 
         // game over
         if (color != sequence?.get(i))
-            return Triple (Status.GAMEOVER, userIndex, duration)
+            return Triple (Status.GAMEOVER, currentScore, duration)
 
-        userIndex++
+        if(currentScore <= index) currentScore++
+        index = (index+1)%sequence?.size!!
+
         // whole sequence is correct, now show the new sequence
         if (i == sequence?.size!!-1) {
-            userIndex = 0
-            return Triple(Status.COMPLETED, 0, duration)
+            return Triple(Status.COMPLETED, currentScore, duration)
         }
 
         //current color is correct, keep getting the input from the user
-        return Triple(Status.CONTINUE,0, duration )
+        return Triple(Status.CONTINUE,currentScore, duration )
     }
 
     fun proceed (){
         sequence?.add(randomColor())
-        Log.e("sequence", "         is $sequence")
     }
 
     private fun randomColor():Colors{
-        var random: Random = Random()
+        var random = Random()
         return Colors.getColor(random.nextInt(4))!!
     }
-
-
 }

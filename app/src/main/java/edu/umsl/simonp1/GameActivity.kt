@@ -1,37 +1,30 @@
 package edu.umsl.simonp1
 
-import android.animation.Animator
-import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
-import android.app.Activity
-import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.activity_game.*
-import android.graphics.PorterDuff
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.view.animation.AlphaAnimation
+import android.view.View
 import android.view.animation.Animation
-import android.view.animation.AnimationSet
 import android.widget.Button
-import android.widget.ImageButton
+import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_game.*
 import java.io.Serializable
-import android.widget.Toast
-
-
 
 
 private const val GAME_FRAGMENT = "GameFramgment"
 const val LEVEL = "Level"
-const val RESULT_VIEW = "RESULT_VIEW"
+const val RESULT = "RESULT"
+const val RECORD = "RECORD"
 
 @Suppress("DEPRECATION")
 class GameActivity : Activity(), GameFramgment.MainFragmentListener {
     var gameFramgment: GameFramgment? = null
+    var record: Int = 0
+    var clickable = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +33,12 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
 
         var level = intent.getSerializableExtra(MainActivity.LEVEL_KEY)
 
-        titleTextView.text = "PLAYING "+ level.toString() + " LEVEL"
+        val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
+        // read record
+        record = sharedPref.getInt(getString(R.string.SAVE_SCORE), 0)
+
+
+        titleTextView.text = "PLAYING " + level.toString() + " LEVEL"
 
         fragmentSetup(level)
 
@@ -49,26 +47,24 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
         redButton.setOnClickListener(redListener)
         yellowButton.setOnClickListener(yellowListener)
         startButton.setOnClickListener(startListener)
-
-
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.e("onPause", " --------------")
+    private fun animateView(view: TextView, string: String) {
+        view.text = string
+        val anim = ObjectAnimator.ofFloat(view, "Alpha", 0f, 1f)
+        anim.repeatMode = 1
+        anim.duration = 1000
+        // anim.repeatMode = Animation.ZORDER_TOP
+        anim.start()
+
+        val handler = Handler()
+
+        handler!!.postDelayed({
+            view.text = ""
+        }, 1200)
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.e("GameActivity", "----> onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e("GameActivity", "----> onDestroy")
-    }
-
-    private fun fragmentSetup(level: Serializable){
+    private fun fragmentSetup(level: Serializable) {
         val bundle = Bundle()
         bundle.putSerializable(LEVEL, level)
 
@@ -86,117 +82,120 @@ class GameActivity : Activity(), GameFramgment.MainFragmentListener {
     }
 
     private val blueListener = View.OnClickListener {
-        animate(blueButton)
-        this.check(Colors.BLUE)
+        if (clickable) {
+            animate(blueButton)
+            this.check(Colors.BLUE)
+        }
     }
 
     private val greenListener = View.OnClickListener {
-        animate(greenButton)
-        check(Colors.GREEN)
+        if (clickable) {
+            animate(greenButton)
+            check(Colors.GREEN)
+        }
     }
 
     private val redListener = View.OnClickListener {
-        animate(redButton)
-        check(Colors.RED)
+        if (clickable) {
+            animate(redButton)
+            check(Colors.RED)
+        }
     }
 
     private val yellowListener = View.OnClickListener {
-        animate(yellowButton)
-        check(Colors.YELLOW)
+        if (clickable) {
+            animate(yellowButton)
+            check(Colors.YELLOW)
+        }
     }
 
     private val startListener = View.OnClickListener {
-        startButton.setText("Exit")
-        println()
-        gameFramgment?.start()
+        startButton.isClickable = false
+        startButton.visibility = View.INVISIBLE
+        gameFramgment?.proceed(true)
     }
 
-    private fun check(color: Colors){
+    private fun check(color: Colors) {
 
         val result = gameFramgment?.check(color)
 
         when (result?.result) {
-            //Status.CONTINUE -> titleTextView.text = ".."
-            Status.COMPLETED -> {
-                val handler = Handler()
-                val context = applicationContext
-                val text = "correct!"
-                val duration = result.duration.toInt()/4
-
-
-                val toast = Toast.makeText(context, text, duration)
-                toast.show()
-                handler!!.postDelayed({
-                    gameFramgment?.proceed()
-                },
-                        result.duration*5
-                )
-
-
-            }
-            Status.GAMEOVER -> gameover(result?.value)
+            Status.CONTINUE -> titleTextView.text = "Current Score:" + result.currentScore.toString()
+            Status.COMPLETED -> completed(result)
+            else -> gameOver(result?.currentScore!!)
         }
     }
 
-    private fun gameover(result: Int){
-        val resultIntent = Intent(this, ResultView::class.java)
-        resultIntent.putExtra(RESULT_VIEW, result)
-        startActivity(resultIntent)
-        finish()
+    private fun completed(result: GameModel.Triple) {
+        titleTextView.text = "Current Score:" + result.currentScore.toString()
+        animateView(this.messageText, "Correct!")
+
+        val handler = Handler()
+        handler!!.postDelayed({
+            gameFramgment?.proceed()
+        },
+                1500
+        )
     }
 
+    private fun gameOver(currentScore: Int) {
+        val color = gameFramgment?.getSequence()?.get(currentScore)
+        val button = getButton(color)
+        animateView(messageText, "The correct was " + color.toString())
+        val handler = Handler()
+        handler.postDelayed({
+            animate(button, 1000, 1)
+        }, 200)
 
-    private fun getHexColor(color: Colors): Int{
-        val value: Int = when (color) {
-            Colors.BLUE -> R.color.colorLBlue
-            Colors.GREEN -> R.color.colorLGreen
-            Colors.RED -> R.color.colorRed
-            else -> R.color.colorYellow
-        }
-        return resources.getColor(value)
+        handler.postDelayed({
+            val resultIntent = Intent(this, ResultView::class.java)
+            resultIntent.putExtra(RESULT, currentScore)
+            startActivity(resultIntent)
+            finish()
+        }, 2200)
+
     }
 
-
-    override fun show(color: Colors, duration: Long, index: Int) {
-        val view: Button = when (color) {
+    private fun getButton(color: Colors?): Button {
+        return when (color) {
             Colors.BLUE -> blueButton
             Colors.GREEN -> greenButton
             Colors.RED -> redButton
             else -> yellowButton
         }
-
-        animate(view, duration, index)
     }
 
-    private fun animate(view: Button, duration: Long = 200, index: Int = 0){
+
+    override fun show(sequence: ArrayList<Colors>, duration: Long) {
+
+        for (i in 0 until sequence.size) {
+            val view = getButton(sequence[i])
+            animate(view, duration, i)
+        }
+    }
+
+    private fun animate(view: Button, duration: Long = 600, index: Int = 0) {
         val anim = ObjectAnimator.ofFloat(view, "Alpha", 0f, 1f)
         anim.repeatMode = 1
-        anim.duration = duration
         anim.repeatMode = Animation.REVERSE
 
-        val elevationAnim = ObjectAnimator.ofFloat(view,"Elevation", 10f)
+        val elevationAnim = ObjectAnimator.ofFloat(view, "Elevation", 10f)
         elevationAnim.repeatCount = 1
         elevationAnim.repeatMode = Animation.REVERSE
 
         val animSet = AnimatorSet()
-        animSet.duration = duration* 2
-        animSet.startDelay =  (index  * (duration*3))
+        animSet.duration = duration
+        animSet.startDelay = (index * duration)
         animSet.play(elevationAnim).with(anim);
         animSet.start();
     }
 
     override fun freeze() {
-        blueButton.isClickable = false
-        greenButton.isClickable = false
-        redButton.isClickable = false
-        yellowButton.isClickable = false
+        clickable = false
     }
 
     override fun unfreeze() {
-        blueButton.isClickable = true
-        greenButton.isClickable = true
-        redButton.isClickable = true
-        yellowButton.isClickable = true
+        clickable = true
     }
 
 }

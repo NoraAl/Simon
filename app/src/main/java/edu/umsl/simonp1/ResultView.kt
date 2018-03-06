@@ -13,7 +13,7 @@ class ResultView : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
-        var result = intent.getSerializableExtra(RESULT_VIEW)
+        var result = intent.getSerializableExtra(RESULT)
 
         resultText.text = "Score: " + result.toString()
         restartButton.setOnClickListener(restartListener)

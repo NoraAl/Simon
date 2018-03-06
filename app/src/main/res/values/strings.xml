@@ -5,4 +5,6 @@
     <string name="easy">easy</string>
     <string name="gameTextPlaceHolder">Playing with level easy</string>
 
+    <string name="SAVE_SCORE">SAVESCORE</string>
+
 </resources>
